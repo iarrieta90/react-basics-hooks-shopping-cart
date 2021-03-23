@@ -1,18 +1,15 @@
-import React, { Component } from "react";
+import React from "react";
 
 import Button from "./Button";
 
-class ShoppingCartItem extends Component {
-  render() {
-    const {
-      img,
-      title,
-      price,
-      quantity,
-      handleChange,
-      handleRemove,
-    } = this.props;
-
+function ShoppingCartItem ({
+  img,
+  title,
+  price,
+  quantity,
+  handleChange,
+  handleRemove,
+}) {
     return (
       <div className="col shopping__cart__item">
         <div className="row flex-column">
@@ -68,7 +65,6 @@ class ShoppingCartItem extends Component {
         </div>
       </div>
     );
-  }
 }
 
 export default ShoppingCartItem;

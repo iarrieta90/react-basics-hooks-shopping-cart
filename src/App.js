@@ -1,10 +1,9 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 
 import "./App.scss";
 
 import ProductCard from "./components/ProductCard";
 
-// Render the products dinamically with a loop
 import products from "./products";
 import Cart from "./components/Cart";
 
@@ -22,32 +21,15 @@ function loadItems() {
   }
 }
 
-class App extends Component {
-  constructor(props) {
-    super(props);
+function App () {
+  const [cartItems, setCartItems] = useState(() => loadItems());
 
-    this.state = {
-      cartItems: [],
-    };
+  useEffect(() => {
+    // setCartItems(() =>  loadItems());
+    localStorage.setItem("products", JSON.stringify(cartItems))
+  }, [cartItems]);
 
-    this.handleAddToCart = this.handleAddToCart.bind(this);
-    this.handleRemove = this.handleRemove.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  componentDidMount() {
-    this.setState(() => ({
-      cartItems: loadItems(),
-    }));
-  }
-
-  componentDidUpdate() {
-    localStorage.setItem("products", JSON.stringify(this.state.cartItems));
-  }
-
-  handleAddToCart(id) {
-    const cartItems = this.state.cartItems;
-
+  function handleAddToCart (id) {
     let index = cartItems.findIndex((item) => item.id === id);
 
     if (index !== -1) {
@@ -59,32 +41,27 @@ class App extends Component {
         return item;
       });
 
-      this.setState(() => ({
-        cartItems: items,
-      }));
+      setCartItems(items);
     } else {
-      this.setState((prevState) => ({
-        cartItems: [
-          ...prevState.cartItems,
+      setCartItems( [
+          ...cartItems,
           {
             ...products.find((prod) => prod.id === id),
             quantity: 1,
           },
         ],
-      }));
+      );
     }
   }
 
-  handleRemove(id) {
-    const items = this.state.cartItems.filter((item) => item.id !== id);
+  function handleRemove (id) {
+    const items = cartItems.filter((item) => item.id !== id);
 
-    this.setState(() => ({
-      cartItems: items,
-    }));
+    setCartItems(items);
   }
 
-  handleChange(event, id) {
-    const items = this.state.cartItems.map((item) => {
+  function handleChange(event, id){
+    const items = cartItems.map((item) => {
       if (item.id === id) {
         item.quantity = Number(event.target.value);
       }
@@ -92,11 +69,9 @@ class App extends Component {
       return item;
     });
 
-    this.setState(() => ({ cartItems: items }));
+    setCartItems(items);
   }
 
-  render() {
-    const { cartItems } = this.state;
 
     return (
       <main className="container-fluid">
@@ -114,7 +89,7 @@ class App extends Component {
                       img={product.img}
                       title={product.title}
                       price={product.price}
-                      handleAddToCart={() => this.handleAddToCart(product.id)}
+                      handleAddToCart={() => handleAddToCart(product.id)}
                     />
                   ))}
                 </div>
@@ -123,13 +98,12 @@ class App extends Component {
           </div>
           <Cart
             cartItems={cartItems}
-            handleRemove={this.handleRemove}
-            handleChange={this.handleChange}
+            handleRemove={handleRemove}
+            handleChange={handleChange}
           />
         </div>
       </main>
     );
-  }
 }
 
 export default App;

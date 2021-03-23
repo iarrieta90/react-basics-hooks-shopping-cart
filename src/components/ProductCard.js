@@ -1,11 +1,8 @@
-import React, { Component } from "react";
+import React from "react";
 
 import Button from "./Button";
 
-class ProductCard extends Component {
-  render() {
-    const { img, title, price, handleAddToCart } = this.props;
-
+function ProductCard ({ img, title, price, handleAddToCart }) {
     return (
       <div className="col mb-4 d-flex flex-column product__card">
         <img className="product__img" src={img} alt="" />
@@ -16,7 +13,6 @@ class ProductCard extends Component {
         </div>
       </div>
     );
-  }
 }
 
 export default ProductCard;
